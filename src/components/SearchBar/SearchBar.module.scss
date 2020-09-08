@@ -1,0 +1,120 @@
+.SearchBarWrap {
+  float: right;
+  width: 75%;
+  height: 50px;
+  max-width: 500px;
+  margin: 15px 0px;
+  clip-path: circle(25px at calc(100% - 35px) 25px);
+  transition: clip-path .2s ease-in-out;
+
+  .SearchBar {
+    box-sizing: border-box;
+    width: calc(100% - 20px);
+    margin: 0 auto;
+    height: 100%;
+    border-radius: 30px;
+    background: #084C61;
+
+    .SearchInput {
+      padding: 0 20px;
+      font-size: 30px;
+      box-sizing: border-box;
+      border: none;
+      outline: none;
+      width: calc(100% - 50px);
+      height: 50px;
+      color: #084C61;
+      font-weight: 600;
+      float: left;
+      border: 5px solid #084C61;
+      border-radius: 30px;
+    }
+
+    .SearchInput.error {
+      color: red;
+    }
+
+    .SearchButton {
+      width: 50px;
+      height: 50px;
+      float: right;
+      overflow: hidden;
+      border-radius: 30px;
+      cursor: pointer;
+
+      .LensWrap {
+        width: 30px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        transform: rotate(30deg) translate3d(15px, -5px, 0px);
+
+
+        .Circle {
+          position: absolute;
+          box-sizing: border-box;
+          width: 20px;
+          height: 20px;
+          border-radius: 30px;
+          border: 3px solid white;
+          background: #084C61;
+        }
+
+        .Line {
+          width: 4px;
+          height: 25px;
+          background: white;
+          border-radius: 20px;
+          margin-left: 8px;
+          margin-top: 40px;
+          position: absolute;
+        }
+      }
+    }
+  }
+
+}
+
+
+
+@media screen and (min-width: 700px) {
+  .SearchBarWrap {
+    width: calc(50%);
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .SearchBarWrap {
+    width: calc(33.3%);
+  }
+  .SearchBarWrap:hover{
+    clip-path: circle(23px at calc(100% - 35px) 25px);;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  .SearchBarWrap {
+    width: calc(25%);
+  }
+  .SearchBarWrap:hover{
+    clip-path: circle(23px at calc(100% - 35px) 25px);;
+  }
+}
+
+@media screen and (min-width: 2000px) {
+  .SearchBarWrap {
+    width: calc(20%);
+  }
+  .SearchBarWrap:hover{
+    clip-path: circle(23px at calc(100% - 35px) 25px);;
+  }
+}
+
+.SearchBarWrap.open{
+  clip-path: circle(200% at calc(100% - 35px) 25px);;
+}
+
+.SearchBarWrap.open:hover{
+  clip-path: circle(200% at calc(100% - 35px) 25px);;
+}

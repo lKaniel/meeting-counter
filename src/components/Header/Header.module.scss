@@ -1,8 +1,8 @@
 .Header{
   width: 100%;
   min-height: 75px;
-  background: transparent;
-  position: fixed;
   background: white;
+  position: fixed;
   box-shadow: 0 0 10px white;
+  z-index: 1000;
 }

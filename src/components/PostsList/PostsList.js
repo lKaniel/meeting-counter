@@ -1,33 +1,50 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import classes from "./PostsList.module.scss"
 import Post from "../Post/Post";
+import LoginButton from "../Header/LoginButton/LoginButton";
+import SearchBar from "../SearchBar/SearchBar";
 
-const PostsList = ({id, title, startDate, finishDate}) => {
+const PostsList = () => {
     const [state, setState] = useState({
         posts: []
     });
 
+    const openPost = useCallback((id)=>{
+        setState((prev)=>{
+            const newPosts = [...prev.posts];
+            console.log(id);
+            console.log(newPosts[id]);
+            if (newPosts[id].isOpen === "open"){
+                for (let i = 0; i < newPosts.length; i++){
+                    newPosts[i].isOpen = "closed"
+                }
+                newPosts[id].isOpen = "recentlyClosed";
+            }else{
+                for (let i = 0; i < newPosts.length; i++){
+                    newPosts[i].isOpen = "closed"
+                }
+                newPosts[id].isOpen = "open";
+            }
+            console.log(newPosts[id]);
+            return{
+                ...prev,
+                posts: newPosts
+            }
+        })
+    },[]);
+
     useEffect(() => {
         setState((prev) => {
             const posts = [];
-            posts.push({
-                id: 0,
-                title: "Simple Title",
-                startDate: "Tuesday",
-                finishDate: "Wednesday"
-            })
-            posts.push({
-                id: 1,
-                title: "Simple Title",
-                startDate: "Tuesday",
-                finishDate: "Wednesday"
-            })
-            posts.push({
-                id: 2,
-                title: "Simple Title",
-                startDate: "Tuesday",
-                finishDate: "Wednesday"
-            })
+            for (let i = 0; i < 30; i++) {
+                posts.push({
+                    id: i,
+                    title: "Simple Title",
+                    startDate: "Tuesday",
+                    finishDate: "Wednesday",
+                    isOpen: "closed"
+                })
+            }
             return {
                 ...prev,
                 posts
@@ -38,7 +55,8 @@ const PostsList = ({id, title, startDate, finishDate}) => {
     const posts = state.posts.map((element, index) => {
         return (
             <Post id={element.id} title={element.title} key={index} startDate={element.startDate}
-                  finishDate={element.finishDate}/>
+                  finishDate={element.finishDate} longitude={element.longitude} latitude={element.latitude} isOpen={element.isOpen}
+                  openPost={openPost}/>
         )
     });
 
