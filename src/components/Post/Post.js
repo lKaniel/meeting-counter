@@ -13,7 +13,7 @@ const center = {
     lng: -0.000
 };
 
-const Post = ({id, title, startDate, finishDate, longitude, attitude, isOpen, openPost}) => {
+const Post = ({id, title, startDate, finishDate, longitude, latitude, isOpen, openPost}) => {
     const [map, setMap] = React.useState(null);
 
     const onLoad = React.useCallback(function callback(map) {
@@ -90,25 +90,9 @@ const Post = ({id, title, startDate, finishDate, longitude, attitude, isOpen, op
     return (
         <div className={classes.PostWrap}>
             <div className={postCls.join(" ")} style={background} ref={postRef} onClick={()=>{
-                // openPost(id)
+                openPost(id)
             }}>
-                {/*<LoadScript*/}
-                {/*    googleMapsApiKey="AIzaSyAXfDzhUc8l339Sf62f7MOiXBtqo7LBcYM"*/}
-                {/*>*/}
-                {/*    <GoogleMap*/}
-                {/*        mapContainerStyle={containerStyle}*/}
-                {/*        Center={center}*/}
-                {/*        zoom={10}*/}
-                {/*        onLoad={onLoad}*/}
-                {/*        onUnmount={onUnmount}*/}
-                {/*        resetBoundsOnResize={true}*/}
-                {/*        options={getMapOptions()}*/}
-                {/*        onClick={onClick}*/}
-                {/*    >*/}
-                {/*        <Marker position={center}/>*/}
-                {/*    </GoogleMap>*/}
-                {/*</LoadScript>*/}
-                <MapContainer/>
+                {isOpen === "open" ? <MapContainer lat={latitude} lng={longitude}/> : null}
                 <div className={classes.Title}></div>
             </div>
         </div>

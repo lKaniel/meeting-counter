@@ -19,20 +19,31 @@ const MapContainer = (props) => {
     }
 
     useEffect(()=>{
+        console.log(1);
         navigator.geolocation.getCurrentPosition(function(position) {
             console.log("Latitude is :", position.coords.latitude);
             console.log("Longitude is :", position.coords.longitude);
         });
     },[])
+
+    const onClick = function (t, map, coord)
+    {
+        const {latLng} = coord;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+        console.log(lng);
+        console.log(lat);
+    }
     // getLocation();
     return (
         <Map
             google={props.google}
             zoom={12}
             style={mapStyles}
-            initialCenter={{ lat: 48.00, lng: -122.00}}
+            initialCenter={{ lat: props.lat, lng: props.lng}}
+            onClick={onClick}
         >
-            <Marker position={{ lat: 48.00, lng: -122.00}} />
+            <Marker position={{ lat: props.lat, lng: props.lng}} />
         </Map>
     );
 };
