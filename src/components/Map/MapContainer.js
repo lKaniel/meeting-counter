@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
+import {Circle, GoogleApiWrapper, Map, Marker} from "google-maps-react";
 import classes from "./MapContainer.module.scss";
 const mapStyles = {
     width: '100%',
@@ -19,13 +19,12 @@ const MapContainer = (props) => {
             "<br>Longitude: " + position.coords.longitude);
     }
 
-    useEffect(()=>{
-        console.log(1);
-        navigator.geolocation.getCurrentPosition(function(position) {
-            console.log("Latitude is :", position.coords.latitude);
-            console.log("Longitude is :", position.coords.longitude);
-        });
-    },[])
+    // useEffect(()=>{
+    //     navigator.geolocation.getCurrentPosition(function(position) {
+    //         console.log("Latitude is :", position.coords.latitude);
+    //         console.log("Longitude is :", position.coords.longitude);
+    //     });
+    // },[])
 
     const onClick = function (t, map, coord)
     {
@@ -43,8 +42,25 @@ const MapContainer = (props) => {
             style={props.styles}
             initialCenter={{ lat: props.lat, lng: props.lng}}
             onClick={onClick}
+            options={{
+                disableDefaultUI: true,
+                mapTypeControl: true,
+                streetViewControl: true,
+                styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'on' }] }],
+            }}
+
         >
             <Marker position={{ lat: props.lat, lng: props.lng}} />
+            {/*<Circle*/}
+            {/*    defaultCenter={{*/}
+            {/*        lat: parseFloat(props.lat),*/}
+            {/*        lng: parseFloat(props.lng)*/}
+            {/*    }}*/}
+            {/*    radius={props.radius}*/}
+            {/*    options={{*/}
+            {/*        strokeColor: "#ff0000"*/}
+            {/*    }}*/}
+            {/*/>*/}
         </Map>
     );
 };

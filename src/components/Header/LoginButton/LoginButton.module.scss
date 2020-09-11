@@ -1,8 +1,23 @@
-.LoginButton{
-  float: left;
+.LoginButton {
+  position: absolute;
   color: #084C61;
   font-size: 24px;
   font-weight: 600;
   line-height: 75px;
-  margin-left: 10px;
+  padding-left: 10px;
+  width: calc(100% - 10px);
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  background: white;
+  clip-path: circle(37.5px at 37.5px 37.5px);
+  transition: clip-path .5s ease-in-out;
+
+  .LoginText{
+    cursor: pointer;
+
+  }
+}
+
+.LoginButton.open{
+  clip-path: circle(150% at 37.5px 37.5px);
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import classes from "./Layout.module.scss"
+import classes from "./Layout.scss"
 const Layout = ({children}) => {
     return (
-        <div className={classes.Layout}>
+        <div className={"layout"}>
             {children}
         </div>
     );

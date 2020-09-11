@@ -5,7 +5,7 @@ import Boxer from "./boxer/Boxer";
 import SearchBar from "../SearchBar/SearchBar";
 const Header = () => {
     return (
-        <div className={classes.Header}>
+        <div className={classes.Header} id={"header"}>
             <LoginButton/>
             <SearchBar/>
             {/*<Boxer/>*/}
