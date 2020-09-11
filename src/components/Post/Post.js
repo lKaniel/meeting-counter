@@ -3,9 +3,16 @@ import classes from "./Post.module.scss"
 import {GoogleMap, LoadScript, Marker} from '@react-google-maps/api';
 import MapContainer from "../Map/MapContainer";
 
-const containerStyle = {
-    width: '100%',
-    height: '100%'
+const closedMap = {
+    width: '0%',
+    height: '0%',
+    transition: "width .5s ease-in-out"
+};
+
+const openedMap = {
+    width: '50%',
+    height: '100%',
+    transition: "width .5s ease-in-out"
 };
 
 const center = {
@@ -71,7 +78,7 @@ const Post = ({id, title, startDate, finishDate, longitude, latitude, isOpen, op
 
     if (isOpen === "open") {
         postCls.push(classes.open);
-    }else if (isOpen === "recentlyClosed"){
+    } else if (isOpen === "recentlyClosed") {
         postCls.push(classes.recentlyClosed);
     }
     let background = {
@@ -79,8 +86,8 @@ const Post = ({id, title, startDate, finishDate, longitude, latitude, isOpen, op
         boxShadow: `3px 3px 10px ${state.colors[1]}`
     }
 
-    const onClick = ( map, coord) =>{
-        const { latLng } = coord;
+    const onClick = (map, coord) => {
+        const {latLng} = coord;
         const lat = latLng.lat();
         const lng = latLng.lng();
         console.log(lat);
@@ -89,10 +96,10 @@ const Post = ({id, title, startDate, finishDate, longitude, latitude, isOpen, op
 
     return (
         <div className={classes.PostWrap}>
-            <div className={postCls.join(" ")} style={background} ref={postRef} onClick={()=>{
+            <div className={postCls.join(" ")} style={background} ref={postRef} onClick={() => {
                 openPost(id)
             }}>
-                {isOpen === "open" ? <MapContainer lat={latitude} lng={longitude}/> : null}
+                    {isOpen === "open" ? <MapContainer lat={latitude} lng={longitude} styles={openedMap}/> : null}
                 <div className={classes.Title}></div>
             </div>
         </div>

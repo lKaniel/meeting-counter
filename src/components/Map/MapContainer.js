@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
+import classes from "./MapContainer.module.scss";
 const mapStyles = {
     width: '100%',
     height: '100%',
@@ -39,7 +40,7 @@ const MapContainer = (props) => {
         <Map
             google={props.google}
             zoom={12}
-            style={mapStyles}
+            style={props.styles}
             initialCenter={{ lat: props.lat, lng: props.lng}}
             onClick={onClick}
         >
