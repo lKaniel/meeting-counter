@@ -5,6 +5,7 @@ import {Transition} from "react-transition-group";
 import {Map, Marker} from "google-maps-react";
 import people from "../../icons/people.svg";
 import peopleWhite from "../../icons/people-white.svg";
+import changeScrolling from "../../functions/changeScroll/changeScroll";
 const closedMap = {
     width: '0%',
     height: '0%',
@@ -70,31 +71,6 @@ function debounce(fn, ms) {
     };
 }
 
-let scrollable = true;
-let prevString = "";
-const changeScrolling = (string) => {
-    if (string === prevString) return;
-    prevString = string;
-    if (scrollable) {
-        document.getElementsByTagName("html")[0].style.overflow = "hidden";
-
-        let div = document.createElement('div');
-        div.style.overflowY = 'scroll';
-        div.style.width = '50px';
-        div.style.height = '50px';
-        document.body.append(div);
-        let scrollWidth = div.offsetWidth - div.clientWidth;
-        div.remove();
-        document.getElementsByClassName("layout")[0].style.paddingRight = `${scrollWidth}px`;
-        // document.getElementById("header").style.paddingRight = `${scrollWidth}px`;
-        scrollable = false;
-    } else {
-        document.getElementsByTagName("html")[0].style.overflowY = "auto";
-        document.getElementsByClassName("layout")[0].style.paddingRight = `0px`;
-        scrollable = true;
-    }
-}
-
 const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, additor, hereAmount, availableDistance, isOpen}) => {
     const [map, setMap] = React.useState(null);
 
@@ -136,6 +112,7 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
                             // additor(id, "closed");
                             return {
                                 ...prev,
+                                isOpen: "closed",
                                 canOpen: true
                             }
                         })
@@ -201,11 +178,11 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
         col.push(["#607B7D", "#3A606E", "#E0FBFC"])
         // col.push(["#03F7EB","#00B295"])
         // col.push(["#FFE5D4","#EFC7C2"])
-        // col.push(["#B0CA87", "#809848","#8C5E58"])
-        // col.push(["#442220", "#2E0014","#CFCFEA"])
+        col.push(["#B0CA87", "#809848","#8C5E58"])
+        col.push(["#442220", "#2E0014","#CFCFEA"])
         col.push(["#93aba7", "#AD9BAA", "#39393A"])
         // col.push(["#93aba7", "#AD9BAA", "#39393A"])
-        // col.push(["#A13D63", "#8c4161","#E3D7FF"])
+        col.push(["#A13D63", "#8c4161","#E3D7FF"])
         let i = parseInt(Math.random() * col.length);
         let icon = peopleWhite
         if (i === 1){
@@ -248,7 +225,7 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
     if (state.isOpen === "open") {
         postCls.push(classes.open);
     } else if (state.isOpen === "recentlyClosed") {
-        postCls.push(classes.recentlyClosed);
+        postCls.push(classes.closing);
     }
     const onClick = (map, coord) => {
         const {latLng} = coord;

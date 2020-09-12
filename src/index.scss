@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 body {
-  margin: 0;
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -8,6 +7,9 @@ body {
 
 *{
   //overflow-x: hidden;
+  user-select: none;
+  margin: 0;
+  padding: 0;
 }
 
 code {

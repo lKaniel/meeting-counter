@@ -1,0 +1,43 @@
+.Wrapper {
+  width: 100%;
+  margin: 10px 0px;
+
+  .Label {
+    margin-left: 30px;
+    font-size: 25px;
+    color: #084C61;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 3px;
+    padding: 0px;
+  }
+
+  .Input {
+    width: calc(100% - 80px);
+    margin: 5px 20px;
+    padding: 0 20px;
+    height: 60px;
+    outline: none;
+    border-radius: 20px;
+    border: 3px solid #084C61;
+    color: #084C61;
+    font-size: 30px;
+  }
+
+  span{
+    color: #f01f30;
+    font-size: 20px;
+    visibility: hidden;
+    margin-left: 30px;
+  }
+}
+
+.Wrapper.invalid {
+  .Label {
+    color: #f01f30;
+  }
+
+  span{
+    visibility: visible;
+  }
+}

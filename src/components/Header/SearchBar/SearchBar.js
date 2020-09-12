@@ -1,6 +1,6 @@
 import React, {useCallback, useRef, useState} from 'react';
 import classes from "./SearchBar.module.scss"
-import Post from "../Post/Post";
+import Post from "../../Post/Post";
 const SearchBar = () => {
 
     const [state, setState] = useState({
@@ -58,7 +58,7 @@ const SearchBar = () => {
     }
 
     return (
-        <div className={searchBarWrapCls.join(" ")}>
+        <div className={searchBarWrapCls.join(" ")} id="search">
             <div className={classes.SearchBar}>
                 <input className={searchInputCls.join(" ")} ref={searchRef} onChange={search}/>
                 <div className={classes.SearchButton} onClick={() => (

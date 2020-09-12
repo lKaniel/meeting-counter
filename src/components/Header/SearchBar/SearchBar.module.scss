@@ -1,4 +1,6 @@
 .SearchBarWrap {
+  position: relative;
+  z-index: 1000;
   float: right;
   width: 75%;
   height: 50px;

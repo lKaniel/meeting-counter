@@ -3,7 +3,7 @@ import classes from "./PostsList.module.scss"
 import Post from "../Post/Post";
 import {CSSTransition} from 'react-transition-group';
 import LoginButton from "../Header/LoginButton/LoginButton";
-import SearchBar from "../SearchBar/SearchBar";
+import SearchBar from "../Header/SearchBar/SearchBar";
 
 let scrollable = true;
 

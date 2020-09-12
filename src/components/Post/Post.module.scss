@@ -13,7 +13,7 @@
     background: linear-gradient(-45deg, #E2711D, #FFB627);
     border-radius: 30px;
     box-shadow: 3px 3px 10px #E2711D;
-    transition: width .5s ease-in-out, height .5s ease-in-out, border-radius .5s ease-in-out, margin .5s ease-in-out, transform .5s ease-in-out;
+    transition: width .5s ease-in-out, height .5s ease-in-out, border-radius .5s ease-in-out, margin .5s ease-in-out, transform .3s ease-in-out;
     overflow: hidden;
     z-index: 998;
     //transform: ;
@@ -161,8 +161,8 @@
   transform: scale(1);
 }
 
-.Post.recentlyClosed {
-  z-index: 999;
+.Post.closing {
+  z-index: 1001;
   position: absolute;
 }
 
@@ -238,6 +238,10 @@
 
     .HereButton:hover {
       opacity: .7;
+    }
+
+    .SubTitle{
+      max-width: 460px;
     }
   }
 
