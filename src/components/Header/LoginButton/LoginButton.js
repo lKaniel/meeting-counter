@@ -96,7 +96,7 @@ const LoginButton = () => {
                 value: "",
                 type: "text",
                 label: "Name",
-                hint: "example@mail.com",
+                hint: "Jhon",
                 errorMessage: "Enter correct name",
                 valid: false,
                 touched: false,
@@ -108,7 +108,7 @@ const LoginButton = () => {
             lastName: {
                 value: "",
                 type: "text",
-                label: "Lastname",
+                label: "Jhonson",
                 hint: "example@mail.com",
                 errorMessage: "Enter correct last name",
                 valid: false,
