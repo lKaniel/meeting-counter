@@ -1,4 +1,5 @@
 let scrollable = true;
+let scrollWidth = 0;
 let prevString = "";
 const changeScrolling = (string) => {
     if (string === prevString) return;
@@ -11,7 +12,7 @@ const changeScrolling = (string) => {
         div.style.width = '50px';
         div.style.height = '50px';
         document.body.append(div);
-        let scrollWidth = div.offsetWidth - div.clientWidth;
+        scrollWidth = div.offsetWidth - div.clientWidth;
         div.remove();
         document.getElementsByClassName("layout")[0].style.paddingRight = `${scrollWidth}px`;
         document.getElementById("search").style.marginRight = `${scrollWidth}px`;
@@ -24,4 +25,9 @@ const changeScrolling = (string) => {
     }
 }
 
+const getScrollWidth = ()=>{
+    return scrollWidth;
+}
+
 export default changeScrolling;
+export {getScrollWidth};

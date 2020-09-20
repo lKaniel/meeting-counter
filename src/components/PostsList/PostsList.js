@@ -1,157 +1,16 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classes from "./PostsList.module.scss"
 import Post from "../Post/Post";
-import {CSSTransition} from 'react-transition-group';
-import LoginButton from "../Header/LoginButton/LoginButton";
-import SearchBar from "../Header/SearchBar/SearchBar";
 
-let scrollable = true;
-
-const changeScrolling = () => {
-    if (scrollable) {
-        document.getElementsByTagName("html")[0].style.overflow = "hidden";
-
-        let div = document.createElement('div');
-        div.style.overflowY = 'scroll';
-        div.style.width = '50px';
-        div.style.height = '50px';
-        document.body.append(div);
-        let scrollWidth = div.offsetWidth - div.clientWidth;
-        div.remove();
-        document.getElementsByClassName("layout")[0].style.paddingRight = `${scrollWidth}px`;
-        // document.getElementById("header").style.paddingRight = `${scrollWidth}px`;
-        scrollable = false;
-    } else {
-        document.getElementsByTagName("html")[0].style.overflowY = "auto";
-        document.getElementsByClassName("layout")[0].style.paddingRight = `0px`;
-        scrollable = true;
-    }
+function roundDec(nbr, dec_places) {
+    var mult = Math.pow(10, dec_places);
+    return Math.round(nbr * mult) / mult;
 }
 
 const PostsList = () => {
         const [state, setState] = useState({
-            posts: [],
-            canOpen: true
+            posts: []
         });
-
-        // const openPost = useCallback((id) => {
-        //     setState((prev) => {
-        //         if (prev.canOpen) {
-        //             console.log(prev.canOpen);
-        //             changeScrolling();
-        //             if (prev.posts[id].isOpen === "open") {
-        //                 const newPosts = [...prev.posts];
-        //                 for (let i = 0; i < newPosts.length; i++) {
-        //                     newPosts[i].isOpen = "closed"
-        //                 }
-        //                 newPosts[id].isOpen = "recentlyClosed";
-        //                 newPosts[id].canOpen = false;
-        //                 console.log("TIMEOUT SET");
-        //                 setTimeout(() => {
-        //                     console.log("TIMEOUTET");
-        //                     setState((prev) => {
-        //                         newPosts[id].canOpen = true;
-        //                         const posts = newPosts.slice();
-        //                         return {
-        //                             ...prev,
-        //                             canOpen: true,
-        //                             posts
-        //                         }
-        //                     })
-        //                 }, 500)
-        //                 return {
-        //                     ...prev,
-        //                     posts: newPosts,
-        //                     canOpen: false
-        //                 }
-        //             } else {
-        //                 const newPosts = [...prev.posts];
-        //                 for (let i = 0; i < newPosts.length; i++) {
-        //                     newPosts[i].isOpen = "closed"
-        //                 }
-        //                 newPosts[id].isOpen = "open";
-        //                 newPosts[id].canOpen = false;
-        //                 console.log("TIMEOUT SET");
-        //                 setTimeout(() => {
-        //                     console.log("TIMEOUTET");
-        //                     setState((prev) => {
-        //                         newPosts[id].canOpen = true;
-        //                         const posts = newPosts.slice();
-        //                         return {
-        //                             ...prev,
-        //                             canOpen: true,
-        //                             posts
-        //                         }
-        //                     })
-        //                 }, 500)
-        //                 return {
-        //                     ...prev,
-        //                     posts: newPosts,
-        //                     canOpen: false
-        //                 }
-        //             }
-        //         } else {
-        //             return prev;
-        //         }
-        //     })
-        //     // if (state.canOpen) {
-        //     //     changeScrolling();
-        //     //     if (state.posts[id].isOpen === "open") {
-        //     //         setState((prev) => {
-        //     //             const newPosts = [...prev.posts];
-        //     //             for (let i = 0; i < newPosts.length; i++) {
-        //     //                 newPosts[i].isOpen = "closed"
-        //     //             }
-        //     //             newPosts[id].isOpen = "recentlyClosed";
-        //     //             return {
-        //     //                 ...prev,
-        //     //                 posts: newPosts,
-        //     //                 canOpen: false
-        //     //             }
-        //     //         })
-        //     //     } else {
-        //     //         setState((prev) => {
-        //     //             const newPosts = [...prev.posts];
-        //     //             for (let i = 0; i < newPosts.length; i++) {
-        //     //                 newPosts[i].isOpen = "closed"
-        //     //             }
-        //     //             newPosts[id].isOpen = "open";
-        //     //             return {
-        //     //                 ...prev,
-        //     //                 posts: newPosts,
-        //     //                 canOpen: false
-        //     //             }
-        //     //         })
-        //     //     }
-        //     //     setTimeout(()=>{
-        //     //         setState((prev)=>{
-        //     //             return{
-        //     //                 ...prev,
-        //     //                 canOpen: true
-        //     //             }
-        //     //         })
-        //     //     },500)
-        //     //     return true;
-        //     // }
-        //     // return false;
-        // }, [state.posts]);
-
-        const changeOpennes = useCallback((id, status) => {
-            setState((prev) => {
-                // let posts = prev.posts;
-                // if (prev.canOpen === true) {
-                //     for (let i = 0; i < posts.length; i++) {
-                //         posts[i].isOpen = "closed";
-                //     }
-                //     posts[id].isOpen = status;
-                // }
-                return {
-                    ...prev,
-                    canOpen: !prev.canOpen,
-                    // posts
-                }
-            })
-        })
 
         useEffect(() => {
             setState((prev) => {
@@ -165,9 +24,8 @@ const PostsList = () => {
                         finishDate: "Wednesday",
                         latitude: 48.00,
                         longitude: -122.00,
-                        isOpen: "closed",
-                        hereAmount: 32,
-                        availableDistance: 999,
+                        hereAmount: 32200000,
+                        availableDistance: 5000 * Math.random(),
                         canOpen: true
                     })
                 }
@@ -179,11 +37,20 @@ const PostsList = () => {
         }, []);
 
         const posts = state.posts.map((element, index) => {
+            let hereAmount = element.hereAmount;
+            if (hereAmount / 10000000 >= 1) {
+                hereAmount = roundDec(hereAmount / 1000000, 0) + "m"
+            }else if (hereAmount / 1000000 >= 1) {
+                hereAmount = roundDec(hereAmount / 1000000, 1) + "m"
+            }else if (hereAmount / 10000 >= 1) {
+                hereAmount = roundDec(hereAmount / 1000, 0) + "k"
+            }else if (hereAmount / 1000 >= 1) {
+                hereAmount = roundDec(hereAmount / 1000, 1) + "k"
+            }
             return (
                 <Post id={element.id} title={element.title} subTitle={element.subTitle} key={index}
                       startDate={element.startDate} finishDate={element.finishDate} longitude={element.longitude}
-                      latitude={element.latitude} additor={changeOpennes} isOpen={element.isOpen}
-                      hereAmount={element.hereAmount} availableDistance={element.availableDistance}
+                      latitude={element.latitude} hereAmount={hereAmount} availableDistance={element.availableDistance}
                 />
             )
         });

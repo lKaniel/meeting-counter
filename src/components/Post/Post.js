@@ -6,6 +6,8 @@ import {Map, Marker} from "google-maps-react";
 import people from "../../icons/people.svg";
 import peopleWhite from "../../icons/people-white.svg";
 import changeScrolling from "../../functions/changeScroll/changeScroll";
+import {getOpenedId, isOpen, setOpen, setOpenedId} from "../../functions/сanOpen/canOpen";
+
 const closedMap = {
     width: '0%',
     height: '0%',
@@ -71,22 +73,9 @@ function debounce(fn, ms) {
     };
 }
 
-const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, additor, hereAmount, availableDistance, isOpen}) => {
-    const [map, setMap] = React.useState(null);
-
-    const onLoad = React.useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds();
-        map.fitBounds(bounds);
-        setMap(map)
-    }, []);
-
-    const onUnmount = React.useCallback(function callback(map) {
-        setMap(map);
-    }, []);
-
+const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, hereAmount, availableDistance}) => {
     const [state, setState] = useState({
         isOpen: "closed",
-        canOpen: true,
         colors: ["#FFA737", "#DC851F", "#4C5B5C"],
         icon: peopleWhite,
         style: {
@@ -94,7 +83,7 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
         }
     })
 
-    const openPost = useCallback(()=>{
+    const openPost = useCallback(() => {
         const offset = getElementOffset(postRef.current);
         let transform;
         if (dimensions.width < 700) {
@@ -102,57 +91,59 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
         } else {
             transform = `translate3d(${-offset.left + 10}px,${-offset.top + 20}px,0)`;
         }
-        setState((prev) => {
-            if (prev.canOpen && state.canOpen) {
+        if (isOpen()) {
+            setState((prev) => {
                 if (prev.isOpen === "open") {
-                    changeScrolling("closed")
+                    setOpen(false);
                     // additor(id, "recentlyClosed");
                     setTimeout(() => {
+                        setOpen(true);
+                        setOpenedId(-1);
+                        changeScrolling("closed")
                         setState((prev) => {
                             // additor(id, "closed");
                             return {
                                 ...prev,
-                                isOpen: "closed",
-                                canOpen: true
+                                isOpen: "closed"
                             }
                         })
                     }, 500)
                     return {
                         ...prev,
                         isOpen: "recentlyClosed",
-                        canOpen: false,
                         style: {
                             ...prev.style,
                             transform: `translate3d(0px,0px,0)`,
                         }
                     }
                 } else {
-                    changeScrolling("open")
-                    // additor(id, "open");
-                    setTimeout(() => {
-                        setState((prev) => {
-                            additor(id, "open");
-                            return {
-                                ...prev,
-                                canOpen: true
+                    if (getOpenedId() === -1 || getOpenedId() === id) {
+                        setOpen(false);
+                        changeScrolling("open")
+                        // additor(id, "open");
+                        setTimeout(() => {
+                            setOpen(true);
+                            // additor(id, "open");
+                        }, 500)
+                        setOpenedId(id)
+                        return {
+                            ...prev,
+                            isOpen: "open",
+                            style: {
+                                ...prev.style,
+                                transform: transform
                             }
-                        })
-                    }, 500)
-                    return {
-                        ...prev,
-                        isOpen: "open",
-                        canOpen: false,
-                        style: {
-                            ...prev.style,
-                            transform: transform
+                        }
+                    } else {
+                        return {
+                            ...prev
                         }
                     }
                 }
-            } else {
-                return prev;
-            }
-        })
-    },[additor, id])
+
+            })
+        }
+    }, [id])
 
     const [dimensions, setDimensions] = useState({
         height: window.innerHeight,
@@ -178,14 +169,14 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
         col.push(["#607B7D", "#3A606E", "#E0FBFC"])
         // col.push(["#03F7EB","#00B295"])
         // col.push(["#FFE5D4","#EFC7C2"])
-        col.push(["#B0CA87", "#809848","#8C5E58"])
-        col.push(["#442220", "#2E0014","#CFCFEA"])
+        col.push(["#B0CA87", "#809848", "#8C5E58"])
+        col.push(["#442220", "#2E0014", "#CFCFEA"])
         col.push(["#93aba7", "#AD9BAA", "#39393A"])
         // col.push(["#93aba7", "#AD9BAA", "#39393A"])
-        col.push(["#A13D63", "#8c4161","#E3D7FF"])
+        col.push(["#A13D63", "#8c4161", "#E3D7FF"])
         let i = parseInt(Math.random() * col.length);
         let icon = peopleWhite
-        if (i === 1){
+        if (i === 1) {
             icon = people
         }
         setState((prev) => {
@@ -273,7 +264,7 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
                             background: state.colors[2],
                             color: state.colors[0]
                         }}>
-                            +
+                            {hereAmount}
                         </button>
                         {state.isOpen === "open" ?
                             <>
@@ -302,6 +293,6 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
     );
 };
 
-export default React.memo(Post, (prevProps, nextProps) => {
-    return true;
-});
+    export default React.memo(Post, (prevProps, nextProps) => {
+        return true;
+    });

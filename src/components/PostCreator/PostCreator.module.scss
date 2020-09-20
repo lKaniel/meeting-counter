@@ -1,0 +1,53 @@
+.PostCreator{
+  position: fixed;
+  z-index: 999;
+
+  .OpenButton{
+    outline: none;
+    border: none;
+    color: white;
+    font-size: 70px;
+    //font-weight: 600;
+    position: absolute;
+    margin-top: calc(100vh - 100px);
+    margin-top: calc(var(--vh, 1vh) * 100 - 100px);
+    margin-left: calc(100vw - 100px);
+    margin-left: calc(100vw - var(--scroll) * 1 - 90px);
+    width: 80px;
+    height: 80px;
+    border-radius: 80px;
+    background: #084C61;
+    cursor: pointer;
+    z-index: 100;
+  }
+
+  .PostCreatorWrap{
+    background: #084C61;
+    transition: clip-path .5s ease-in-out;
+    clip-path: circle(40px at calc(100vw - 60px) calc(100vh - 60px));
+    clip-path: circle(40px at calc(100vw - var(--scroll, 1px) * 1 - 50px) calc(var(--vh, 1vh) * 100 - 60px));
+    width: 100vw;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    position: relative;
+    z-index: 99;
+  }
+
+  .PostCreatorWrap.open{
+    clip-path: circle(200% at calc(100vw - 60px) calc(100vh - 60px));
+    clip-path: circle(200% at calc(100vw - var(--scroll, 1px) * 1 - 50px) calc(var(--vh, 1vh) * 100 - 60px));
+  }
+
+  .PostCreatorWrap.closing{
+    clip-path: circle(40px at calc(100vw - 60px) calc(100vh - 60px));
+    clip-path: circle(40px at calc(100vw - var(--scroll, 1px) * 1 - 50px) calc(var(--vh, 1vh) * 100 - 60px));
+  }
+}
+
+.PostCreator.open{
+  z-index: 1004;
+}
+
+.PostCreator.closing{
+
+}

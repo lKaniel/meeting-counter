@@ -1,5 +1,6 @@
 .LoginContainer {
   position: absolute;
+  z-index: 1004;
 
   .LoginText {
     position: absolute;
@@ -22,7 +23,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1004;
 
     .LoginForm{
       width: 100%;
@@ -37,6 +37,75 @@
         color: #084C61;
         text-align: center;
       }
+
+      .LoginBtn{
+        margin-left: 20px;
+        outline: none;
+        border: none;
+        //border: 3px solid #084C61;
+        background: #084C61;
+        color: white;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(50% - 20px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .LoginBtn:hover{
+        background: #063441;
+      }
+
+      .LoginBtn:disabled{
+        opacity: .3;
+        cursor: default;
+        background: #084C61;
+      }
+
+      .GoogleBtn{
+        margin-left: 20px;
+        outline: none;
+        border: none;
+        //border: 3px solid #f2a60c;
+        box-sizing: border-box;
+        color: white;
+        background: #f2a60c;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(50% - 35px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .GoogleBtn:hover{
+        background: #be860a;
+      }
+
+      .RegisterBtn{
+        margin-left: 20px;
+        margin-top: 20px;
+        outline: none;
+        border: 3px solid #084C61;
+        box-sizing: border-box;
+        color: white;
+        background: #084C61;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(100% - 35px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .RegisterBtn:hover{
+        background: #084C61;
+        color: white;
+      }
     }
   }
 
@@ -46,5 +115,102 @@
 
   .LoginFrame.closing {
     clip-path: circle(37.5px at 37.5px 37.5px);
+  }
+
+  .RegisterFrame {
+    position: absolute;
+    width: calc(100vw);
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    background: white;
+    clip-path: circle(37.5px at 37.5px 37.5px);
+    transition: clip-path .5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .LoginForm{
+      width: 100%;
+      max-width: 460px;
+
+      .LoginTitle{
+        width: 100%;
+        height: 70px;
+        line-height: 70px;
+        font-size: 50px;
+        font-weight: 600;
+        color: #084C61;
+        text-align: center;
+      }
+
+      .LoginBtn{
+        margin-left: 20px;
+        outline: none;
+        border: none;
+        //border: 3px solid #084C61;
+        background: #084C61;
+        color: white;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(50% - 20px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .LoginBtn:hover{
+        background: #063441;
+      }
+
+      .LoginBtn:disabled{
+        opacity: .3;
+        cursor: default;
+        background: #084C61;
+      }
+
+      .GoogleBtn{
+        margin-left: 20px;
+        outline: none;
+        border: none;
+        //border: 3px solid #f2a60c;
+        box-sizing: border-box;
+        color: white;
+        background: #f2a60c;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(50% - 35px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .GoogleBtn:hover{
+        background: #be860a;
+      }
+
+      .RegisterBtn{
+        margin-left: 20px;
+        margin-top: 20px;
+        outline: none;
+        border: 3px solid #084C61;
+        box-sizing: border-box;
+        color: white;
+        background: #084C61;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(100% - 35px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .RegisterBtn:hover{
+        background: #084C61;
+        color: white;
+      }
+    }
   }
 }

@@ -115,7 +115,8 @@
           border-radius: 30px;
           outline: none;
           border: none;
-          font-size: 50px;
+          font-size: 20px;
+          font-weight: 600;
           line-height: 50px;
         }
       }
@@ -224,13 +225,13 @@
       opacity: .7;
     }
 
-    .AddFriend {
-      cursor: pointer;
-    }
-
-    .AddFriend:hover {
-      opacity: .7;
-    }
+    //.AddFriend {
+    //  cursor: pointer;
+    //}
+    //
+    //.AddFriend:hover {
+    //  opacity: .7;
+    //}
 
     .HereButton {
       cursor: pointer;

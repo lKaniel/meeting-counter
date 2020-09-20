@@ -51,21 +51,22 @@ const MapContainer = (props) => {
 
         >
             <Marker position={{ lat: props.lat, lng: props.lng}} />
-            {/*<Circle*/}
-            {/*    defaultCenter={{*/}
-            {/*        lat: parseFloat(props.lat),*/}
-            {/*        lng: parseFloat(props.lng)*/}
-            {/*    }}*/}
-            {/*    radius={props.radius}*/}
-            {/*    options={{*/}
-            {/*        strokeColor: "#ff0000"*/}
-            {/*    }}*/}
-            {/*/>*/}
+                <Circle
+                    radius={props.radius}
+                    center={{ lat: props.lat, lng: props.lng}}
+                    strokeColor='transparent'
+                    strokeOpacity={0}
+                    strokeWeight={5}
+                    fillColor='#FF0000'
+                    fillOpacity={0.2}
+                />
         </Map>
     );
 };
 
-export default GoogleApiWrapper({
+export default  React.memo(GoogleApiWrapper({
     apiKey: 'AIzaSyAXfDzhUc8l339Sf62f7MOiXBtqo7LBcYM'
-})(MapContainer);
+})(MapContainer),(prevProps, nextProps) => {
+    return prevProps.styles === nextProps.styles;
+});
 

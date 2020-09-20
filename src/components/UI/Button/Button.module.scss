@@ -1,0 +1,13 @@
+.Button {
+  outline: none;
+  display: inline-block;
+  border-radius: 20px;
+}
+
+.Button:focus{
+  outline: none;
+}
+
+.Button:active{
+  box-shadow: inset 2px 2px 1px rgba(0,0,0,.3);
+}
