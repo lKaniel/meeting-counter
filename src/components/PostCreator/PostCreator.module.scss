@@ -31,6 +31,19 @@
     height: calc(var(--vh, 1vh) * 100);
     position: relative;
     z-index: 99;
+
+    .PostCreatorContent{
+      width: 100%;
+      background: red;
+      margin-left: 0%;
+      padding-top: 35vh;
+      padding-top: calc(var(--vh, 1vh) * 35);
+      transition: width .5s ease-in-out, height .5s ease-in-out, margin .5s ease-in-out;
+      display: flex;
+      //align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
   }
 
   .PostCreatorWrap.open{

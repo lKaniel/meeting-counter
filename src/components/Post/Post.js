@@ -73,7 +73,7 @@ function debounce(fn, ms) {
     };
 }
 
-const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, hereAmount, availableDistance}) => {
+const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, hereAmount, availableDistance, zoom}) => {
     const [state, setState] = useState({
         isOpen: "closed",
         colors: ["#FFA737", "#DC851F", "#4C5B5C"],
@@ -239,7 +239,7 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
                     mountOnEnter
                     unmountOnExit
                 >
-                    {state => <MapContainer lat={latitude} lng={longitude} onClick={onClick} radius={availableDistance}
+                    {state => <MapContainer inPost={true} zoom={zoom} lat={latitude} lng={longitude} markerLat={latitude} markerLng={longitude} onClick={onClick} radius={availableDistance}
                                             styles={dimensions.width < 1100 ?
                                                 state === "entering" || state === "exiting" ? enteringMobileMap
                                                     : openedMobileMap

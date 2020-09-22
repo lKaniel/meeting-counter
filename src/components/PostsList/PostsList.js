@@ -7,7 +7,7 @@ function roundDec(nbr, dec_places) {
     return Math.round(nbr * mult) / mult;
 }
 
-const PostsList = () => {
+const PostsList = ({posts}) => {
         const [state, setState] = useState({
             posts: []
         });
@@ -24,6 +24,7 @@ const PostsList = () => {
                         finishDate: "Wednesday",
                         latitude: 48.00,
                         longitude: -122.00,
+                        zoom: 12,
                         hereAmount: 32200000,
                         availableDistance: 5000 * Math.random(),
                         canOpen: true
@@ -36,24 +37,47 @@ const PostsList = () => {
             })
         }, []);
 
-        const posts = state.posts.map((element, index) => {
-            let hereAmount = element.hereAmount;
-            if (hereAmount / 10000000 >= 1) {
-                hereAmount = roundDec(hereAmount / 1000000, 0) + "m"
-            }else if (hereAmount / 1000000 >= 1) {
-                hereAmount = roundDec(hereAmount / 1000000, 1) + "m"
-            }else if (hereAmount / 10000 >= 1) {
-                hereAmount = roundDec(hereAmount / 1000, 0) + "k"
-            }else if (hereAmount / 1000 >= 1) {
-                hereAmount = roundDec(hereAmount / 1000, 1) + "k"
-            }
-            return (
-                <Post id={element.id} title={element.title} subTitle={element.subTitle} key={index}
-                      startDate={element.startDate} finishDate={element.finishDate} longitude={element.longitude}
-                      latitude={element.latitude} hereAmount={hereAmount} availableDistance={element.availableDistance}
-                />
-            )
-        });
+        if (posts === undefined) {
+            posts = state.posts.map((element, index) => {
+                let hereAmount = element.hereAmount;
+                if (hereAmount / 10000000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000000, 0) + "m"
+                } else if (hereAmount / 1000000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000000, 1) + "m"
+                } else if (hereAmount / 10000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000, 0) + "k"
+                } else if (hereAmount / 1000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000, 1) + "k"
+                }
+                return (
+                    <Post id={element.id} title={element.title} subTitle={element.subTitle} key={index}
+                          startDate={element.startDate} finishDate={element.finishDate} longitude={element.longitude}
+                          latitude={element.latitude} hereAmount={hereAmount} availableDistance={element.availableDistance}
+                          zoom={element.zoom}
+                    />
+                )
+            });
+        } else {
+            posts = posts.map((element, index) => {
+                let hereAmount = element.hereAmount;
+                if (hereAmount / 10000000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000000, 0) + "m"
+                } else if (hereAmount / 1000000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000000, 1) + "m"
+                } else if (hereAmount / 10000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000, 0) + "k"
+                } else if (hereAmount / 1000 >= 1) {
+                    hereAmount = roundDec(hereAmount / 1000, 1) + "k"
+                }
+                return (
+                    <Post id={element.id} title={element.title} subTitle={element.subTitle} key={index}
+                          startDate={element.startDate} finishDate={element.finishDate} longitude={element.longitude}
+                          latitude={element.latitude} hereAmount={hereAmount} availableDistance={element.availableDistance}
+                    />
+                )
+            });
+
+        }
 
         return (
             <div className={classes.PostsList}>

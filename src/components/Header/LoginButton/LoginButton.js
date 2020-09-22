@@ -5,7 +5,10 @@ import Input from "../../UI/Input/Input";
 import changeScrolling from "../../../functions/changeScroll/changeScroll";
 import {isOpen, setOpen} from "../../../functions/сanOpen/canOpen";
 import GoogleLogin, {useGoogleLogin} from "react-google-login";
+import jwt from "jwt-simple";
 import axios from "axios";
+import {getToken, saveToken} from "../../../App";
+import PostsList from "../../PostsList/PostsList";
 
 function debounce(fn, ms) {
     let timer;
@@ -23,7 +26,7 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-const responseGoogle = (response) => {
+const failureResponseGoogle = (response) => {
     console.log(response.profileObj);
     console.log(response.tokenId);
     return true;
@@ -51,6 +54,7 @@ const LoginButton = () => {
     const [state, setState] = useState({
         isOpen: false,
         isFormValid: false,
+        display: "login",
         loginForm: {
             mail: {
                 value: "",
@@ -89,7 +93,8 @@ const LoginButton = () => {
                 valid: false,
                 touched: false,
                 validation: {
-                    required: true
+                    required: true,
+                    email: true
                 }
             },
             name: {
@@ -108,8 +113,8 @@ const LoginButton = () => {
             lastName: {
                 value: "",
                 type: "text",
-                label: "Jhonson",
-                hint: "example@mail.com",
+                label: "Last name",
+                hint: "Jhonson",
                 errorMessage: "Enter correct last name",
                 valid: false,
                 touched: false,
@@ -134,7 +139,7 @@ const LoginButton = () => {
             repeatPassword: {
                 value: "",
                 type: "password",
-                label: "Password",
+                label: "Repeat password",
                 hint: "password",
                 errorMessage: "Enter correct password",
                 valid: false,
@@ -144,6 +149,11 @@ const LoginButton = () => {
                     minLength: 6
                 }
             }
+        },
+        user: {
+            name: "",
+            lastName: "",
+            posts: []
         }
     });
 
@@ -182,6 +192,28 @@ const LoginButton = () => {
             return {
                 ...prevState,
                 loginForm,
+                isFormValid
+            }
+        })
+    }, []);
+
+    const updateRegisterForm = useCallback((event, controllName) => {
+        const registerForm = {...state.registerForm};
+        const controll = registerForm[controllName];
+        controll.value = event.target.value;
+        controll.touched = true;
+        controll.valid = validate(controll.value, controll.validation);
+        registerForm[controllName] = controll;
+
+        let isFormValid = true;
+
+        Object.keys(registerForm).forEach(name => {
+            isFormValid = registerForm[name].valid && isFormValid;
+        })
+        setState(prevState => {
+            return {
+                ...prevState,
+                registerForm,
                 isFormValid
             }
         })
@@ -245,20 +277,61 @@ const LoginButton = () => {
                     touched={control.touched}
                     shouldValidate={!!control.validation}
                     errorMessage={control.errorMessage}
-                    onChange={event => updateLoginFrame(event, controllName)}
+                    onChange={event => updateRegisterForm(event, controllName)}
                 />
             )
         });
         return inputs
     }
 
-    const submitLoginForm = (event) => {
-        event.preventDefault()
+    const submitLoginForm = async (event) => {
+        event.preventDefault();
+        try {
+            const authData = {
+                email: state.loginForm.mail.value,
+                password: state.loginForm.password.value
+            }
+            const response = await axios.post(`http://localhost:9090/login`, authData);
+            // const response = await axios.get(`http://localhost:9090/user/hello`, authData);
+            console.log(response);
+            if (response.status === 200 && response.data.status === 200) {
+                saveToken(response.data.message);
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const submitRegisterForm = async (event) => {
+        event.preventDefault();
+        try {
+            const authData = {
+                email: state.registerForm.mail.value,
+                first_name: state.registerForm.name.value,
+                last_name: state.registerForm.lastName.value,
+                password: state.registerForm.password.value,
+                confirm_password: state.registerForm.repeatPassword.value
+            }
+            const response = await axios.post(`http://localhost:9090/registration`, authData);
+            console.log(response.data);
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 
     const loginButtonClick = () => {
 //todo
 //        authorisation handler
+    }
+
+    const openRegisterButtonClick = () => {
+        setState((prev) => {
+            return {
+                ...prev,
+                display: "register"
+            }
+        })
     }
 
     const registerButtonClick = async () => {
@@ -269,8 +342,75 @@ const LoginButton = () => {
             .catch(error => console.log(error));
     }
 
+    const successResponseGoogle = async (response) => {
+        try {
+            const serverResponse = await axios.post(`http://localhost:9090/google-login?token=${response.tokenId}`);
+            if (serverResponse.status === 200 && serverResponse.data.status === 200) {
+                saveToken(serverResponse.data.message);
+                getInfoFromToken();
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        return true;
+    }
+
+    const getInfoFromToken = async () => {
+        const authData = {
+            // ...authData,
+            headers: {
+                "Access-Control-Allow-Origin" : "*",
+                "Content-type": "Application/json",
+                "Authorization": `Bearer ${getToken()}`
+            }
+        }
+        const response = await axios.get(`http://localhost:9090/user/getUser`, authData);
+        console.log(response);
+        const user = {
+            name: "Bob",
+            lastName: "Marley",
+            posts: [
+                {
+                    id: 0,
+                    title: "Simple Title",
+                    subTitle: "This is description and here you can write something.",
+                    startDate: "Tuesday",
+                    finishDate: "Wednesday",
+                    latitude: 48.00,
+                    longitude: -122.00,
+                    zoom: 12,
+                    hereAmount: 32200000,
+                    availableDistance: 5000 * Math.random(),
+                    canOpen: true
+                },
+                {
+                    id: 2,
+                    title: "Simple Title",
+                    subTitle: "This is description and here you can write something.",
+                    startDate: "Tuesday",
+                    finishDate: "Wednesday",
+                    latitude: 48.00,
+                    longitude: -122.00,
+                    zoom: 12,
+                    hereAmount: 32200000,
+                    availableDistance: 5000 * Math.random(),
+                    canOpen: true
+                },
+            ]
+        };
+        console.log(123)
+        setState((prev) => {
+            return {
+                ...prev,
+                user
+            }
+        })
+    }
+
     return (
         <div className={classes.LoginContainer} ref={loginRef}>
+            <div className={classes.LoginText}
+                 onClick={openLogin}>{state.isOpen ? "Close" : state.user.name !== "" ? "Account" : "Login"}</div>
             <Transition
                 in={state.isOpen === true}
                 timeout={{
@@ -294,34 +434,50 @@ const LoginButton = () => {
                     }
                     return (
                         <div className={LoginFrameCls.join(" ")}>
-                            <form className={classes.LoginForm} onSubmit={submitLoginForm}>
-                                <div className={classes.LoginTitle}>Sign in</div>
-                                {renderLoginInputs()}
-                                {/*<input name="mail" className={classes.LoginInput} placeholder="example@mail.com" type={"mail"} ref={loginMailRef} onChange={updateLogin}></input>*/}
-                                {/*<input name="password" className={classes.LoginInput} placeholder="password" type={"password"} ref={loginPasswordRef} onChange={updateLogin}></input>*/}
-                                <input type="submit" value="Login" disabled={!state.isFormValid}
-                                       onClick={loginButtonClick} className={classes.LoginBtn}/>
-                                <GoogleLogin
-                                    clientId="552928003235-0flet39ibonp7pi29k6tseoadkp5pv8a.apps.googleusercontent.com"
-                                    buttonText="Login"
-                                    render={renderProps => (
-                                        <button onClick={renderProps.onClick} disabled={renderProps.disabled}
-                                                className={classes.GoogleBtn}>Google</button>
-                                    )}
-                                    onSuccess={responseGoogle}
-                                    onFailure={responseGoogle}
-                                    cookiePolicy={'single_host_origin'}
-                                />
-                                <input type="submit" value="Register" disabled={!state.isFormValid}
-                                       onClick={loginButtonClick} className={classes.RegisterBtn}/>
-                            </form>
+                            {
+                                getToken() !== "" ?
+                                    <div className={classes.ProfileFrame}>
+                                        <div className={classes.Name}>
+                                            Your meetings
+                                        </div>
+                                        <PostsList posts={state.user.posts}/>
+                                    </div>
+                                    : state.display === "login" ?
+                                    <form className={classes.LoginForm} onSubmit={submitLoginForm}>
+                                        <div className={classes.LoginTitle}>Sign in</div>
+                                        {renderLoginInputs()}
+                                        <input type="submit" value="Login" disabled={!state.isFormValid}
+                                               onClick={loginButtonClick} className={classes.LoginBtn}/>
+                                        <GoogleLogin
+                                            clientId="552928003235-0flet39ibonp7pi29k6tseoadkp5pv8a.apps.googleusercontent.com"
+                                            buttonText="Login"
+                                            render={renderProps => (
+                                                <button onClick={renderProps.onClick}
+                                                        disabled={renderProps.disabled}
+                                                        className={classes.GoogleBtn}>Google</button>
+                                            )}
+                                            onSuccess={successResponseGoogle}
+                                            onFailure={failureResponseGoogle}
+                                            cookiePolicy={'single_host_origin'}
+                                        />
+                                        <input type="button" value="Register"
+                                               onClick={openRegisterButtonClick} className={classes.RegisterBtn}/>
+                                    </form>
+                                    :
+                                    <form className={classes.RegisterForm} onSubmit={submitRegisterForm}>
+                                        <div className={classes.LoginTitle}>Register</div>
+                                        {renderRegisterInputs()}
+                                        <input type="submit" value="Register" disabled={!state.isFormValid}
+                                               className={classes.RegisterBtn}/>
+                                    </form>
+                            }
+
                         </div>
                     )
                 }
                 }
 
             </Transition>
-            <div className={classes.LoginText} onClick={openLogin}>{state.isOpen ? "Close" : "Login"}</div>
         </div>
     );
 };

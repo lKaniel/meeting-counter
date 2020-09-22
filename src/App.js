@@ -4,7 +4,20 @@ import PostsList from "./components/PostsList/PostsList";
 import Header from "./components/Header/Header";
 import PostCreator from "./components/PostCreator/PostCreator";
 
-// const user =
+let token = "";
+
+const saveToken = (payload)=>{
+    token = payload.split("=")[1].split(")")[0];
+    console.log(token);
+    console.log(token);
+    console.log(token);
+    // const obj = JSON.parse(payload);
+    // console.log(obj)
+}
+
+const getToken = ()=>{
+    return token;
+}
 
 function App() {
     return (
@@ -19,3 +32,4 @@ function App() {
 }
 
 export default App;
+export {saveToken, getToken};
