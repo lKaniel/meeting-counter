@@ -3,11 +3,11 @@ import classes from "./Header.module.scss"
 import LoginButton from "./LoginButton/LoginButton";
 import Boxer from "./boxer/Boxer";
 import SearchBar from "./SearchBar/SearchBar";
-const Header = () => {
+const Header = ({search, onSearch}) => {
     return (
         <div className={classes.Header} id="header">
             <LoginButton/>
-            <SearchBar/>
+            <SearchBar search={search} onSearch={onSearch}/>
             {/*<Boxer/>*/}
         </div>
     );

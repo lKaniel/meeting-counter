@@ -7,6 +7,8 @@ import people from "../../icons/people.svg";
 import peopleWhite from "../../icons/people-white.svg";
 import changeScrolling from "../../functions/changeScroll/changeScroll";
 import {getOpenedId, isOpen, setOpen, setOpenedId} from "../../functions/сanOpen/canOpen";
+import axios from "axios";
+import {getToken, saveToken} from "../../App";
 
 const closedMap = {
     width: '0%',
@@ -80,7 +82,8 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
         icon: peopleWhite,
         style: {
             background: `linear-gradient(135deg, #FFA737, #DC851F)`
-        }
+        },
+        isJoined: true
     })
 
     const openPost = useCallback(() => {
@@ -219,13 +222,29 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
         postCls.push(classes.closing);
     }
     const onClick = (map, coord) => {
-        const {latLng} = coord;
-        const lat = latLng.lat();
-        const lng = latLng.lng();
-        console.log(lat);
-        console.log(lng);
+        // const {latLng} = coord;
+        // const lat = latLng.lat();
+        // const lng = latLng.lng();
+        // console.log(lat);
+        // console.log(lng);
     }
 
+    const onHereButtonClick = async ()=>{
+        try {
+            const authData = {
+                // ...authData,
+                headers: {
+                    "Access-Control-Allow-Origin" : "*",
+                    "Content-type": "Application/json",
+                    "Authorization": `Bearer ${getToken()}`
+                }
+            }
+            const response = await axios.post(`http://localhost:9090/user/add/${id}?longitude=${longitude}&latitude=${latitude}`, authData);
+            console.log(response);
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     return (
         <div className={classes.PostWrap}>
@@ -271,7 +290,8 @@ const Post = ({id, title, subTitle, startDate, finishDate, longitude, latitude, 
                                 <button className={classes.HereButton} style={{
                                     background: state.colors[2],
                                     color: state.colors[0]
-                                }}>
+                                }}
+                                onClick={onHereButtonClick}>
                                     I'M HERE
                                 </button>
                                 <div>

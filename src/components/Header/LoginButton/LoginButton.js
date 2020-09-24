@@ -292,10 +292,9 @@ const LoginButton = () => {
                 password: state.loginForm.password.value
             }
             const response = await axios.post(`http://localhost:9090/login`, authData);
-            // const response = await axios.get(`http://localhost:9090/user/hello`, authData);
-            console.log(response);
             if (response.status === 200 && response.data.status === 200) {
                 saveToken(response.data.message);
+                getInfoFromToken();
             }
         } catch (e) {
             console.log(e)
@@ -305,15 +304,26 @@ const LoginButton = () => {
     const submitRegisterForm = async (event) => {
         event.preventDefault();
         try {
-            const authData = {
+            let authData = {
                 email: state.registerForm.mail.value,
                 first_name: state.registerForm.name.value,
                 last_name: state.registerForm.lastName.value,
                 password: state.registerForm.password.value,
                 confirm_password: state.registerForm.repeatPassword.value
             }
-            const response = await axios.post(`http://localhost:9090/registration`, authData);
-            console.log(response.data);
+            let response = await axios.post(`http://localhost:9090/registration`, authData);
+            console.log(response)
+            if (response.status === 200 && response.data.status === 200){
+                const authData = {
+                    email: state.loginForm.mail.value,
+                    password: state.loginForm.password.value
+                }
+                const response = await axios.post(`http://localhost:9090/login`, authData);
+                if (response.status === 200 && response.data.status === 200) {
+                    saveToken(response.data.message);
+                    getInfoFromToken();
+                }
+            }
         } catch (e) {
             console.log(e)
         }

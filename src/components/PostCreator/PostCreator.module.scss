@@ -19,6 +19,16 @@
     background: #084C61;
     cursor: pointer;
     z-index: 100;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+    transition: transform .2s ease-in-out;
+  }
+
+  .OpenButton.open{
+    transform: rotate(45deg);
   }
 
   .PostCreatorWrap{
@@ -31,10 +41,12 @@
     height: calc(var(--vh, 1vh) * 100);
     position: relative;
     z-index: 99;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .PostCreatorContent{
       width: 100%;
-      background: red;
+      //background: red;
       margin-left: 0%;
       padding-top: 35vh;
       padding-top: calc(var(--vh, 1vh) * 35);
@@ -43,6 +55,36 @@
       //align-items: center;
       justify-content: center;
       flex-direction: column;
+      z-index: 12323123;
+      position: relative;
+
+      .RegisterBtn{
+        margin-left: 20px;
+        margin-top: 20px;
+        outline: none;
+        border: 3px solid #084C61;
+        box-sizing: border-box;
+        color: #084C61;
+        background: white;
+        font-size: 25px;
+        font-weight: 600;
+        width: calc(100% - 35px);
+        height: 70px;
+        border-radius: 20px;
+        float: left;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+
+      .RegisterBtn:hover{
+        background: #f1f1f1;
+        //color: white;
+      }
+
+      .RegisterBtn:disabled{
+        background: #999;
+        cursor: default;
+      }
     }
   }
 
@@ -61,6 +103,17 @@
   z-index: 1004;
 }
 
-.PostCreator.closing{
-
+@media screen and (min-width: 1100px) {
+  .PostCreator {
+    .PostCreatorWrap {
+      display: flex;
+      //align-items: center;
+      justify-content: center;
+      .PostCreatorContent {
+        width: 50%;
+        margin-left: 50%;
+        padding-top: 0;
+      }
+    }
+  }
 }

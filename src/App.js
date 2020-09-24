@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import Layout from "./hoc/Layout/Layout";
 import PostsList from "./components/PostsList/PostsList";
 import Header from "./components/Header/Header";
@@ -20,12 +20,29 @@ const getToken = ()=>{
 }
 
 function App() {
+
+    const [state, setState] = useState({
+        search:""
+    })
+
+    const updateSearchState = useCallback((event) => {
+        //todo
+        // console.log(state)
+        // console.log(event)
+        // setState(prevState => {
+        //     return {
+        //         ...prevState,
+        //         search: event.target.value
+        //     }
+        // })
+    }, []);
+
     return (
         <>
-            <Header/>
+            <Header search={state.search} onSearch={updateSearchState}/>
             <PostCreator/>
             <Layout>
-                <PostsList/>
+                <PostsList search={state.search}/>
             </Layout>
         </>
     );

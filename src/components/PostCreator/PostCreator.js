@@ -6,6 +6,8 @@ import {Transition} from "react-transition-group";
 import {Map} from "google-maps-react";
 import MapContainer from "../Map/MapContainer";
 import Input from "../UI/Input/Input";
+import axios from "axios";
+import {getToken} from "../../App";
 
 function debounce(fn, ms) {
     let timer;
@@ -23,7 +25,7 @@ const openedMap = {
     height: '100%',
     transition: "width .4s ease-in-out",
     zIndex: 10000,
-    position: "relative"
+    position: "fixed"
 };
 
 const openedMobileMap = {
@@ -33,6 +35,11 @@ const openedMobileMap = {
     zIndex: 10000,
     position: "relative"
 };
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 
 const PostCreator = () => {
         const [dimensions, setDimensions] = useState({
@@ -49,57 +56,30 @@ const PostCreator = () => {
                         width: window.innerWidth
                     })
                 }
-            }, 20)
+            }, 0)
             window.addEventListener('resize', debouncedHandleResize)
         });
 
         const [state, setState] = useState({
             isOpen: false,
             isClosing: false,
-            lat: 0,
-            lng: 0,
-            availableDistance: 30000,
-            zoom: 3,
             markerLat: 0,
             markerLng: 0,
+            zoom: 3,
+            isFormValid: false,
             createPostForm: {
-                lat: {
-                    value: 0,
-                    type: "email",
-                    label: "Latitude",
-                    hint: "Latitude",
-                    errorMessage: "Enter correct latitude",
-                    valid: false,
-                    touched: false,
-                    validation: {
-                        required: true,
-                        minLength: 1
-                    }
-                },
-                lng: {
-                    value: 0,
-                    type: "text",
-                    label: "Longitude",
-                    hint: "Longitude",
-                    errorMessage: "Enter correct longitude",
-                    valid: false,
-                    touched: false,
-                    validation: {
-                        required: true,
-                        minLength: 1
-                    }
-                },
                 radius: {
-                    value: 0,
+                    value: "0",
                     type: "text",
                     label: "Access radius",
-                    hint: "Access radius",
-                    errorMessage: "Enter correct last Access radius",
+                    hint: "radius",
+                    errorMessage: "Enter correct access radius",
                     valid: false,
                     touched: false,
                     validation: {
                         required: true,
-                        minLength: 1
+                        minLength: 1,
+                        isInt: true
                     }
                 },
                 title: {
@@ -115,17 +95,17 @@ const PostCreator = () => {
                         minLength: 3
                     }
                 },
-                repeatPassword: {
+                description: {
                     value: "",
-                    type: "password",
-                    label: "Repeat password",
-                    hint: "password",
-                    errorMessage: "Enter correct password",
+                    type: "text",
+                    label: "Description",
+                    hint: "Description",
+                    errorMessage: "Enter correct description",
                     valid: false,
                     touched: false,
                     validation: {
                         required: true,
-                        minLength: 6
+                        minLength: 10
                     }
                 }
             }
@@ -162,6 +142,99 @@ const PostCreator = () => {
         }
         const postWrapCls = [classes.PostCreatorWrap];
 
+        const validate = (value, validation) => {
+            if (!validation) {
+                return true;
+            }
+            let isValid = true;
+            if (validation.required) {
+                isValid = value.trim() !== "" && isValid;
+            }
+            if (validation.email) {
+                isValid = validateEmail(value) && isValid;
+            }
+            if (validation.minLength) {
+                isValid = value.length >= validation.minLength && isValid;
+            }
+
+            return isValid;
+        }
+        const updateFrame = useCallback((event, controllName) => {
+            const form = {...state.createPostForm};
+            const control = form[controllName];
+            control.value = event.target.value;
+            control.touched = true;
+            control.valid = validate(control.value, control.validation);
+
+            let isFormValid = true;
+            if (controllName === "radius") {
+                if (control.value === ""){
+                    control.value = "0"
+                }
+                control.value = parseInt(control.value) ;
+            }
+            form[controllName] = control;
+
+            Object.keys(form).forEach(name => {
+                isFormValid = form[name].valid && isFormValid;
+            })
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    loginForm: form,
+                    isFormValid
+                }
+            })
+        }, []);
+
+        const renderInputs = () => {
+            const inputs = Object.keys(state.createPostForm).map((controllName, index) => {
+                const control = state.createPostForm[controllName];
+                return (
+                    <Input
+                        key={controllName + index}
+                        label={control.label}
+                        type={control.type}
+                        value={control.value}
+                        valid={control.valid}
+                        touched={control.touched}
+                        shouldValidate={!!control.validation}
+                        errorMessage={control.errorMessage}
+                        onChange={event => updateFrame(event, controllName)}
+                        inverse={true}
+                    />
+                )
+            });
+            return inputs
+        }
+
+        const submitCreateForm = async (event) => {
+            event.preventDefault();
+            try {
+                const headers = {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-type": "Application/json",
+                        "Authorization": `Bearer ${getToken()}`
+                    }
+                }
+                const authData = {
+                    title: state.createPostForm.title.value,
+                    description: state.createPostForm.description.value,
+                    longitude: state.markerLng,
+                    latitude: state.markerLat,
+                    available_distance: parseInt(state.createPostForm.radius.value),
+                    zoom: state.zoom,
+                    here_amount: 0,
+                    start_date: "2017-01-13",
+                    finish_date: "2017-01-14",
+                }
+                const response = await axios.post(`http://localhost:9090/meeting/create`, authData, headers);
+                console.log(response.data);
+            } catch (e) {
+            }
+
+        }
 
         const onClick = function (t, map, coord) {
             const {latLng} = coord;
@@ -170,8 +243,8 @@ const PostCreator = () => {
             setState((prev => {
                 return {
                     ...prev,
-                    markerLat: lat,
-                    markerLng: lng
+                    markerLng: lng,
+                    markerLat: lat
                 }
             }))
         }
@@ -184,9 +257,14 @@ const PostCreator = () => {
                 }
             })
         }
+
+        const openButtonCls = [classes.OpenButton];
+        if (state.isOpen) {
+            openButtonCls.push(classes.open);
+        }
         return (
             <div className={postCreatorCls.join(" ")} ref={postCreatorRef}>
-                <button className={classes.OpenButton} onClick={openPostCreator}>{state.isOpen ? "-" : "+"}</button>
+                <button className={openButtonCls.join(" ")} onClick={openPostCreator}>{state.isOpen ? "+" : "+"}</button>
                 <Transition
                     in={state.isOpen === true}
                     timeout={{
@@ -210,13 +288,19 @@ const PostCreator = () => {
                         }
                         return (
                             <div className={postWrapCls.join(" ")}>
-                                <MapContainer lat={state.markerLat} lng={state.markerLng} markerLng={state.markerLng}
+                                <MapContainer lat={state.markerLat}
+                                              lng={state.markerLng}
+                                              markerLng={state.markerLng}
                                               markerLat={state.markerLat} zoom={state.zoom}
-                                              radius={state.availableDistance} onClick={onClick} onZoom={onZoom}
+                                              radius={parseInt(state.createPostForm.radius.value)} onClick={onClick}
+                                              onZoom={onZoom}
                                               styles={dimensions.width < 1100 ? openedMobileMap : openedMap}/>
-                                <div className={classes.PostCreatorContent}>
-                                    <Input/>
-                                </div>
+                                <form className={classes.PostCreatorContent} onSubmit={submitCreateForm}>
+                                    {renderInputs()}
+                                    <input type="submit" value="Create"
+                                           disabled={!((state.isFormValid) && !(getToken() === ""))}
+                                           className={classes.RegisterBtn}/>
+                                </form>
                             </div>
                         )
                     }}
